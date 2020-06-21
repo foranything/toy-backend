@@ -4,7 +4,7 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
     
     <mapper namespace="com.kakao.mapper.testMapper">
-		<select id="getTest" resultType="hashmap">
+		<select id="getTest" resultType="com.kakao.domain.Test">
 			SELECT * FROM CHAT_ROOM_LIST
 		</select>
     </mapper>

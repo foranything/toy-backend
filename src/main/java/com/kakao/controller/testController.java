@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.kakao.domain.Test;
 import com.kakao.service.testService;
 
 @Controller
@@ -19,9 +20,8 @@ public class testController {
 	
 	@RequestMapping(value = "/", method = {RequestMethod.POST, RequestMethod.GET})
 	public String test() {
-	
-		HashMap test = service.getTest();
-		System.out.println("로그"+test);
+		
+		Test test = service.getTest();
 		
 		System.out.println("안녕하세요");
 		
