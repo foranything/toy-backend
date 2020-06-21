@@ -1,0 +1,13 @@
+spring:
+  datasource:
+        url: jdbc:mariadb://18.217.58.23:3306/db_messenger
+        driver-class-name: org.mariadb.jdbc.Driver
+        username: user
+        password: 1234
+
+  jpa:
+    open-in-view: false
+    generate-ddl: true
+    show-sql: true
+    hibernate:
+      ddl-auto: update        
