@@ -23,7 +23,7 @@ public class testController {
 		
 		Test test = service.getTest();
 		
-		System.out.println("æ»≥Á«œººø‰");
+		System.out.println("æ»≥Á«œººø‰"+test);
 		
 		return "test/test";
 	}
