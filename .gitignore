@@ -30,3 +30,25 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Java template
+*.class
+ 
+# Package Files #
+*.jar
+*.war
+*.ear
+
+
+
+target/
+/target/
+/logs/*.log
+/logs/*.log.*
+.classpath
+.bak
+/.gitignore.bak
+/.project
+/.settings
+/bin/
+
