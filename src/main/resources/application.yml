@@ -10,4 +10,13 @@ spring:
     generate-ddl: true
     show-sql: true
     hibernate:
-      ddl-auto: update        
+      ddl-auto: update 
+
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: false
+    freemarker:
+      cache: false        
+   

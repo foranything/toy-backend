@@ -2,9 +2,22 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>테스트 로그인</title>
+<script type="text/javascript">
+function login() {
+	var formObj = arguments[0];
+	formObj.action = arguments[1];
+	formObj.submit();		
+}
+</script>
 </head>
 <body>
-
+<div id="wrap">
+	<form method="post">
+		<input type="text" name="userId">
+		<input type="password" name="userPwd">
+		<button type="button" onclick="login(this.form, 'testLogin')">로그인</button>
+	</form>
+</div>
 </body>
 </html>

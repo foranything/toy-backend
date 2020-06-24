@@ -1,14 +1,13 @@
 package com.kakao.mapper;
 
-import java.util.HashMap;
-
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
-import com.kakao.domain.Test;
+import com.kakao.domain.MsgrUser;
 
 @Component
 @Mapper
 public interface testMapper {
-	public Test getTest();
+	public MsgrUser testLogin(@Param (value= "userId") String userId, @Param(value = "userPwd") String userPwd);
 }
