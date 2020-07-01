@@ -16,10 +16,19 @@ public class ChatController {
 
     private final SimpMessageSendingOperations messagingTemplate;
 
-    @MessageMapping("/message")
+    @MessageMapping("/chat/message")
     public void message(ChatMessage message) {
+        if (ChatMessage.MessageType.ENTER.equals(message.getType()))
+            message.setMessage(message.getSender() + "님이 입장하셨습니다.");
+        messagingTemplate.convertAndSend("/sub/chat/room/" + message.getRoomId(), message);
+    }
+    
+    
+    @MessageMapping("/message")
+    public void messages(ChatMessage message) {
         if (ChatMessage.MessageType.ENTER.equals(message.getType()))
             message.setMessage(message.getSender() + "님이 입장하셨습니다.");
         messagingTemplate.convertAndSend("/sub/room/" + message.getRoomId(), message);
     }
+
 }

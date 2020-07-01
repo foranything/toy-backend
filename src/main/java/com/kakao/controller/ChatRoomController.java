@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -19,12 +18,12 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("/")
+@RequestMapping("/chat")
 public class ChatRoomController {
 
     private final ChatRoomRepository chatRoomRepository;
 
-	@RequestMapping(value = "/room", method = {RequestMethod.POST, RequestMethod.GET})
+    @GetMapping("/room")
     public String rooms(Model model) {
         return "/chat/room";
     }
@@ -35,7 +34,7 @@ public class ChatRoomController {
         return chatRoomRepository.findAllRoom();
     }
 
-    @PostMapping("/createRoom")
+    @PostMapping("/room")
     @ResponseBody
     public ChatRoom createRoom(@RequestParam String name) {
         return chatRoomRepository.createChatRoom(name);

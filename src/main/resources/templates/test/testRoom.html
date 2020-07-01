@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Websocket Chat</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<!-- CSS -->
+<link rel="stylesheet" href="/webjars/bootstrap/4.3.1/dist/css/bootstrap.min.css">
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+<style>
+  [v-cloak] {
+      display: none;
+  }
+</style>
+
+
+<script type="text/javascript">
+function createRoom() {
+	var roomTitle = document.getElementById("roomTitle").value;
+
+	alert("asdfasfdasdfs :" + roomTitle);
+	
+	$.ajax({
+		url : 'testCreateRoom',
+		data : {roomTitle : roomTitle},
+		type : 'POST',
+		dataType:'json',
+		success : function(result){
+			if(result.status == 1) {			
+				alert("채팅방 생성에 성공하셨습니다.");			
+			
+				var html = '';
+				
+				html += '<li>';
+				html += '<a href="'+"/joinRoom?roomId="+result.roomId+'">';			
+				html += roomTitle
+				html += '</a>';
+				html += '</li>';
+
+				$('.list-group').append(html);
+			} else if(result.status == 0) {
+				alert("채팅방 생성에 실패하셨습니다.");							
+			}			
+		}
+	})	
+}
+
+
+
+</script>
+</head>
+<body>
+<div class="container" id="wrap" >
+    <div class="row">
+        <div class="col-md-12">
+            <h3>채팅방 리스트</h3>
+        </div>
+    </div>
+	<form>
+	    <div class="input-group">
+	        <div class="input-group-prepend">
+	            <label class="input-group-text">방제목</label>
+	        </div>
+		        <input type="text" class="form-control" name="roomTitle" id= "roomTitle">
+		        <div class="input-group-append">
+		            <button class="btn btn-primary" type="button" onclick="createRoom()">채팅방 개설</button>
+		        </div>
+	    </div>
+	</form>
+    <ul class="list-group">
+		<li th:each="room : ${roomList}" th:if="${roomList != null}">
+			<a th:href="@{/joinRoom(roomId=${room.myChatRoomSeq})}">[[${room.myChatRoomName}]]</a>
+		</li>		
+    </ul>
+</div>
+</body>
+</html>

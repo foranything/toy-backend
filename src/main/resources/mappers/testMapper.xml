@@ -5,11 +5,66 @@
     
     <mapper namespace="com.kakao.mapper.testMapper">
 		<select id="testLogin" resultType="com.kakao.domain.MsgrUser">
-			SELECT * FROM
+			SELECT 
+				USER_ID userId,
+				USER_PWD userPwd
+			FROM
 				MSGR_USER
 			WHERE
 				USER_ID = #{userId}
 					AND
 				USER_PWD = #{userPwd}
 		</select>
+		
+		<insert id="createTestRoom" parameterType="com.kakao.domain.ChatRoomList">
+			INSERT INTO CHAT_ROOM_LIST(MY_CHAT_ROOM_NAME) VALUES(#{roomTitle});
+		</insert>
+		
+		
+		<select id="getRoomId" resultType="com.kakao.domain.ChatRoomList">
+			SELECT
+				MY_CHAT_ROOM_SEQ myChatRoomSeq
+			FROM
+				CHAT_ROOM_LIST
+			WHERE
+				MY_CHAT_ROOM_NAME = #{roomTitle}
+		</select>
+
+		<select id="getRoomList" resultType="com.kakao.domain.ChatRoomList">
+			SELECT
+				MY_CHAT_ROOM_SEQ myChatRoomSeq,
+				MY_CHAT_ROOM_NAME myChatRoomName,
+				USER_ID userId			
+			FROM
+				CHAT_ROOM_LIST
+		</select>
+
+		<insert id="testRoomJoinUser" parameterType="com.kakao.domain.ChatRoomList">
+			INSERT INTO CHAT_ROOM_JOIN_USER(USER_ID, MY_CHAT_ROOM_SEQ) VALUES(#{userId}, #{roomId});
+		</insert>
+
+		<select id="testRoomIn" resultType="com.kakao.domain.ChatRoomList">
+			SELECT
+				MY_CHAT_ROOM_SEQ myChatRoomSeq,
+				MY_CHAT_ROOM_NAME myChatRoomName,
+				USER_ID userId			
+			FROM
+				CHAT_ROOM_LIST
+			WHERE
+				MY_CHAT_ROOM_SEQ = #{roomId}
+		</select>
+
+
+		<select id="testRoomUserCheck" resultType="com.kakao.domain.ChatRoomList">
+			SELECT
+				MY_CHAT_ROOM_SEQ myChatRoomSeq,
+				USER_ID userId		
+			FROM
+				CHAT_ROOM_JOIN_USER
+			WHERE
+				MY_CHAT_ROOM_SEQ = #{roomId}
+					AND
+				USER_ID = #{userId, jdbcType=VARCHAR}			
+		</select>
+		
     </mapper>
