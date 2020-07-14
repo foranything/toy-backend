@@ -41,7 +41,6 @@
     <script src="/webjars/stomp-websocket/2.3.3-1/stomp.min.js"></script>
 	<script th:inline="javascript">
     /*<![CDATA[*/
-		
 		var sock = new SockJS("/ws-stomp");
         var ws = Stomp.over(sock);
         var reconnect = 0;
@@ -50,18 +49,9 @@
         var sender = [[${session.loginUser.userId}]];
 
         var message = document.getElementById('message').value;
-        
         var messages = [];
-        
-        $(document).ready(function() {
-			findRoom();
-        });
-        
-        
-        function findRoom() {
-            axios.get('/findRoom/'+this.roomId).then(response => { room = response.data; });
-        }
-        
+
+       
         function sendMessage() {
             ws.send("/pub/message", {}, JSON.stringify({type:'TALK', roomId:this.roomId, sender:this.sender, message:document.getElementById('message').value}));
             document.getElementById('message').value = '';

@@ -32,16 +32,32 @@
 
 		<select id="getRoomList" resultType="com.kakao.domain.ChatRoomList">
 			SELECT
-				MY_CHAT_ROOM_SEQ myChatRoomSeq,
-				MY_CHAT_ROOM_NAME myChatRoomName,
-				USER_ID userId			
+				CHAT_ROOM_LIST.MY_CHAT_ROOM_SEQ myChatRoomSeq,
+				CHAT_ROOM_LIST.MY_CHAT_ROOM_NAME myChatRoomName,
+				CHAT_ROOM_JOIN_USER.USER_ID userId			
 			FROM
-				CHAT_ROOM_LIST
+				CHAT_ROOM_LIST INNER JOIN CHAT_ROOM_JOIN_USER
+					ON
+				CHAT_ROOM_LIST.MY_CHAT_ROOM_SEQ = CHAT_ROOM_JOIN_USER.MY_CHAT_ROOM_SEQ
+			WHERE
+				CHAT_ROOM_JOIN_USER.USER_ID = #{userId}
 		</select>
+
 
 		<insert id="testRoomJoinUser" parameterType="com.kakao.domain.ChatRoomList">
 			INSERT INTO CHAT_ROOM_JOIN_USER(USER_ID, MY_CHAT_ROOM_SEQ) VALUES(#{userId}, #{roomId});
 		</insert>
+
+		
+		<insert id="chatRoomJoinUser" parameterType="com.kakao.domain.ChatRoomList">
+			INSERT INTO CHAT_ROOM_LIST(USER_ID, MY_CHAT_ROOM_NAME, MY_CHAT_ROOM_SEQ) VALUES(#{userId}, #{roomName}, #{roomId});
+		</insert>
+
+		
+		<insert id="createTestChatRoom" parameterType="com.kakao.domain.ChatRoomList">
+			INSERT INTO CHAT_ROOM_LIST(USER_ID, MY_CHAT_ROOM_NAME, MY_CHAT_ROOM_REG_DT) VALUES(#{userId}, #{roomName}, #{strTime});
+		</insert>
+		
 
 		<select id="testRoomIn" resultType="com.kakao.domain.ChatRoomList">
 			SELECT
@@ -66,5 +82,84 @@
 					AND
 				USER_ID = #{userId, jdbcType=VARCHAR}			
 		</select>
+
+
+		<select id="getMyChatRoomId" resultType="com.kakao.domain.ChatRoomList">
+			SELECT
+				MY_CHAT_ROOM_SEQ myChatRoomSeq
+			FROM
+				CHAT_ROOM_LIST
+			WHERE
+				MY_CHAT_ROOM_REG_DT = #{strTime}
+					AND
+				USER_ID = #{userId, jdbcType=VARCHAR}			
+		</select>
+
+
+		
+		
+		<insert id="friendAdd" parameterType="com.kakao.domain.MsgrFriendList">
+			INSERT INTO MSGR_FRIEND_LIST (USER_ID, MY_FRIEND_ID) VALUES (#{userId}, #{myFriendId});
+		</insert>
+		
+		
+		<select id="getMsgrFriendList" resultType="com.kakao.domain.MsgrFriendList">
+			SELECT
+				USER_ID userId,
+				MY_FRIEND_ID myFriendId,
+				MY_FRIEND_SHOW myFriendShow						
+			FROM
+				MSGR_FRIEND_LIST
+			WHERE
+				USER_ID = #{userId, jdbcType=VARCHAR}
+		</select>
+
+
+		<select id="getMsgrFriend" resultType="com.kakao.domain.MsgrFriendList">
+			SELECT
+				USER_ID userId,
+				MY_FRIEND_ID myFriendId,
+				MY_FRIEND_SHOW myFriendShow						
+			FROM
+				MSGR_FRIEND_LIST
+			WHERE
+				USER_ID = #{userId, jdbcType=VARCHAR}
+		</select>
+		
+		
+		<select id="getChatRoomUserList" resultType="com.kakao.domain.MsgrUser">
+			SELECT 
+				MSGR_USER.USER_ID userId,
+				USER_NICKNAME userNick,
+				USER_EMAIL userEmail						
+			FROM
+				MSGR_USER INNER JOIN CHAT_ROOM_JOIN_USER
+					ON
+				MSGR_USER.USER_ID = CHAT_ROOM_JOIN_USER.USER_ID
+					WHERE
+						CHAT_ROOM_JOIN_USER.MY_CHAT_ROOM_SEQ = #{roomId};
+		</select>
+
+
+
+		<insert id="insertChatMsg" parameterType="com.kakao.domain.ChatMessage">
+			INSERT
+				INTO
+					CHAT_MSG(MY_CHATROOM_SEQ, USER_ID, MSG_CNT, MSG_REG_DT, MSG_REG_ID)
+				VALUES(#{roomId}, #{userId}, #{msgCnt}, #{msgRegDt}, #{userId});
+		</insert>
+		
+		
+		<select id="getChatMsgHistory" resultType="com.kakao.domain.ChatMessage">
+			SELECT 
+				MY_CHATROOM_SEQ roomId,
+				USER_ID sender,
+				MSG_CNT message
+			FROM
+				CHAT_MSG
+					WHERE
+						MY_CHATROOM_SEQ = #{roomId};
+		</select>
+		
 		
     </mapper>

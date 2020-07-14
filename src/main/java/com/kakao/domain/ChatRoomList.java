@@ -7,4 +7,5 @@ public class ChatRoomList {
 	private String userId;
 	private int myChatRoomSeq;
 	private String myChatRoomName;
+	private String myChatRoomRegDt;
 }
