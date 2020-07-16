@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>메인창</title>
+</head>
+<style type="text/css">
+
+ul {
+	list-style-type: none;
+}
+
+.friendBtn {
+	background-color: #eee;
+}
+
+.menuList {
+	width: 200px;
+	height: 600px;
+}
+
+.mainView {
+	width: 500px;
+	height: 600px;
+}
+
+.menuList, .mainView {
+	float: left;
+	border: 1px solid #ddd;
+}
+
+.menuList p, .mainView .mainFriendList li,  .mainView .mainRoomList li{
+	cursor: pointer;
+}
+
+
+.mainRoomList{
+	display: none;
+}
+
+
+
+.modal{
+	display:none;
+	position: fixed; top: 40px; left: 30%;
+	width: 300px; height: 200px;
+	border: 1px solid #ddd;
+	background-color: #fff;
+}
+
+
+</style>
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="/webjars/axios/0.17.1/dist/axios.min.js"></script>
+<script src="/webjars/sockjs-client/1.1.2/sockjs.min.js"></script>
+<script src="/webjars/stomp-websocket/2.3.3-1/stomp.min.js"></script>
+
+
+<script th:inline="javascript">
+/*<![CDATA[*/
+
+function friendAdd() {
+	
+	var myFriendId = document.getElementById('friendAdd').value;
+	var inputData = {myFriendId};
+	
+	$.ajax({
+		url : 'friendAdd',
+		data : inputData,
+		type : "POST",
+		dataType:'json',
+		success  : function(result){
+			if(result.status == 1) {
+				alert(result.friend.myFriendId);	
+				
+				var html = '';
+				
+				html += '<li>';
+				html += '<a href="'+"/joinRoom?roomId="+result.roomId+'">';			
+				html += roomTitle
+				html += '</a>';
+				html += '</li>';
+
+				$('.list-group').append(html);				
+			}
+		}
+	})
+	
+}
+
+
+function friendForm() {
+	$('.mainRoomList').css('display','none');
+	$('.mainFriendList').css('display','block');
+
+	$('.friendBtn').css('background-color','gray');
+	$('.chatRoomBtn').css('background-color','white');
+}
+
+
+function chatRoomForm() {
+	$('.mainFriendList').css('display','none');
+	$('.mainRoomList').css('display','block');
+
+	$('.chatRoomBtn').css('background-color','gray');
+	$('.friendBtn').css('background-color','white');
+}
+
+function openState() {
+	document.getElementById("friendId").value = arguments[0];
+	$('.modal').css('display','block');
+}
+
+
+
+/*
+ajax방식으로 대화방 생성
+function createRoom() {
+	var friendId = document.getElementById("friendId").value;
+
+	$.ajax({
+		url : 'createTestChatRoom',
+		data : {friendId : friendId},
+		type : 'POST',
+		dataType:'json',
+		success : function(result){
+			if(result.status == 1) {			
+				alert("대화방 생성");
+				var html = '';
+				
+				html += '<li>';
+				html += '<a href="'+"/joinRoom?roomId="+result.roomId+'">';
+				html += friendId
+				html += '</a>';
+				html += '</li>';
+
+				$('.mainRoomList').append(html);
+			} else if(result.status == 0) {
+				alert("채팅방 생성에 실패하셨습니다.");							
+			}			
+		}
+	})
+}
+*/
+
+
+//소켓통신으로 대화방 생성
+var sock = new SockJS("/ws-stomp");
+var ws = Stomp.over(sock);
+var reconnect = 0;
+
+var messages = [];
+var createUser = [[${session.loginUser.userId}]];
+
+
+function sendCreateRoom() {
+	var friendId = document.getElementById("friendId").value;
+	ws.send("/pub/createChat", {}, JSON.stringify({type:'CREATE', createUser:createUser, friendId:friendId}));
+}
+
+
+function connect() {
+    ws.connect({}, function(frame) {
+        ws.subscribe("/sub/mainHome/"+ createUser, function(message) {
+            var recv = JSON.parse(message.body);
+            alert("recv.type : " + recv.type + "recv.createUser : " + recv.createUser + "recv.friendId :" + recv.friendId);
+            recvMessage(recv);
+        });
+    }, function(error) {
+        if(reconnect++ <= 5) {
+            setTimeout(function() {
+                console.log("connection reconnect");
+                sock = new SockJS("/ws-stomp");
+                ws = Stomp.over(sock);
+                connect();
+            },10*1000);
+        }
+    });
+}
+
+
+function recvMessage(recv) {
+	alert("recv.type : " + recv.type + "recv.createUser : " + recv.createUser + "recv.friendId :" + recv.friendId + "recv.roomName :" + recv.roomName);
+
+	var html = '';
+	
+	html += '<li>';
+	html += '<a href="'+"/joinRoom?roomId="+recv.roomId+'">';
+	html += recv.roomName
+	html += '</a>';
+	html += '</li>';
+
+	$('.mainRoomList').append(html);
+}
+
+connect();
+
+/*]]>*/
+</script>
+
+
+
+<body>
+<div id="wrap">
+   <!-- The Modal -->
+    <div id="myModal" class="modal">
+      <!-- Modal content -->
+      <div class="modal-content">
+      	<button class="close">&times;</button>
+		<button type="button" id="createRoomButton" onclick="sendCreateRoom()">대화방생성</button>
+		<input type="text" id="friendId" name="friendId" value="" readonly="readonly" />
+      </div>
+    </div>
+
+	<div id="container">
+		<div class="menuList">
+			<p class="friendBtn" onclick="friendForm()">친구</p>
+			<p class="chatRoomBtn" onclick="chatRoomForm()">채팅</p>
+		</div>
+		<div class="mainView">
+			<div class="mainFriendHeader">
+				<input type="text" name="friendAdd" id="friendAdd"><button type="button" onclick="friendAdd()">추가</button>
+			</div>
+			<p>친구 창</p>
+			<div class="mainFriendList" id="mainFriendList">
+				<ul th:each="friend : ${friendList}">
+					<li>
+						<button type="button" th:onclick="openState([[${friend.myFriendId}]])">[[${friend.myFriendId}]]</button>
+					</li>
+				</ul>
+			</div>
+			<p>채팅룸 창</p>
+			<div class="mainRoomList" id="mainRoomList">
+				<ul th:each="room : ${roomList}">
+					<li>
+						<a th:href="@{/joinRoom(roomId=${room.myChatRoomSeq})}">[[${room.myChatRoomName}]]</a>
+					</li>
+				</ul>
+			</div>		
+		</div>
+	</div>
+</div>
+</body>
+</html>

@@ -1,4 +1,4 @@
-papackage com.kakao.controller;
+package com.kakao.controller;
 
 import java.util.HashMap;
 import java.util.List;
@@ -108,4 +108,3 @@ public class testController {
 		return "test/testChatRoom";
 	}
 }
-

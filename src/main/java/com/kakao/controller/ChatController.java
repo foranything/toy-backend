@@ -98,4 +98,57 @@ public class ChatController {
         messagingTemplate.convertAndSend("/sub/mainHome/" + createRoom.getFriendId(), createRoom);
         messagingTemplate.convertAndSend("/sub/mainHome/" + createRoom.getCreateUser(), createRoom);
     }
+    
+    
+    
+    
+
+    
+
+    
+    
+    
+    
+    //채팅방 생성
+    
+    /*
+    @MessageMapping("/createChatRoom")
+    public void createChatRoom(CreateRoom createRoom, HttpSession session) {
+
+		MsgrUser user = (MsgrUser)session.getAttribute("loginUser");
+
+    	
+    	System.out.println("messages : " + createRoom.getCreateUser() + "," + createRoom.getRoomId() + "," + createRoom.getFriendId()+ "," + createRoom.getRoomName());
+    	
+		java.util.Date utilDate = new java.util.Date();
+		SimpleDateFormat sdf = new SimpleDateFormat(
+			"yyyy.MM.dd HH:mm:ss"
+		);
+		String strTime = sdf.format(utilDate);
+		String roomName = user.getUserId() + "," + createRoom.getFriendId();
+    	
+		String[] inputUserList = new String[2];
+		inputUserList[0] = user.getUserId();
+		inputUserList[1] = createRoom.getFriendId();
+
+		int roomId = -1;
+
+		if(service.createTestChatRoom(user.getUserId(), roomName, strTime) == SUCCESS) {
+			roomId = service.getMyChatRoomId(user.getUserId(), strTime).getMyChatRoomSeq();
+
+			for(int idx = 0; idx < inputUserList.length; idx++) {
+				if(service.testRoomJoinUser(inputUserList[idx], roomName, roomId) != SUCCESS) {
+				}
+			}
+		}
+
+		if (CreateRoom.CreateType.CREATE.equals(createRoom.getType())) {
+            createRoom.setMessage(createRoom.getFriendId() + "님을 초대하였습니다.");		
+		}
+
+		messagingTemplate.convertAndSend("/sub/mainHome/" + createRoom.getFriendId(), createRoom);
+        messagingTemplate.convertAndSend("/sub/mainHome/" + createRoom.getCreateUser(), createRoom);
+    }
+	*/
+
 }
