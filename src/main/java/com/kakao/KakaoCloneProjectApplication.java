@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class KakaoCloneProjectApplication {
-	//test1
+	//test123
 	public static void main(String[] args) {
 		SpringApplication.run(KakaoCloneProjectApplication.class, args);
 	}
