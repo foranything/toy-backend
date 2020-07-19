@@ -7,8 +7,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,6 +25,7 @@ import com.kakao.domain.MsgrFriendList;
 import com.kakao.domain.MsgrUser;
 import com.kakao.service.testService;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @Controller
 @RestController
 @RequestMapping("/")
@@ -39,12 +43,16 @@ public class testController {
 	}
 	
 
-	@RequestMapping(value = "/testLogin", method = {RequestMethod.POST, RequestMethod.GET})
+	@ResponseBody
+	@RequestMapping(value = "/testLogin", method = {RequestMethod.POST, RequestMethod.GET}, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public String testLogin(
+		HttpServletResponse response,
 		HttpSession session,
-		@RequestParam(value = "userId") String userId,
-		@RequestParam(value = "userPwd") String userPwd,
+		@RequestBody HashMap<String, Object> map,
 		Model model) {
+
+		String userId = map.get("id").toString();
+		String userPwd = map.get("pw").toString();
 		
 		MsgrUser user = service.testLogin(userId, userPwd);	
 		session.setAttribute("loginUser", user);
@@ -54,8 +62,6 @@ public class testController {
 		model.addAttribute("roomList", roomList);
 		model.addAttribute("friendList", friendList);
 		
-		
-		//"/test/testRoom"
 		return "/test/testMain";
 	}
 
