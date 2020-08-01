@@ -20,7 +20,7 @@ notifications:
     recipients:
       - dreamy1154@naver.com
 
-/   #codeDeploy 관려 내용 추가
+#codeDeploy 관려 내용 추가
   - provider: codedeploy
      access_key_id: $AWS_ACCESS_KEY # Travis repo settings에 설정된 값
      secret_access_key: $AWS_SECRET_KEY
