@@ -1,6 +1,6 @@
 spring:
   datasource:
-        url: jdbc:mariadb://3.19.237.118:3306/db_messenger
+        url: jdbc:mariadb://3.23.87.109:3306/db_messenger
         driver-class-name: org.mariadb.jdbc.Driver
         username: messengerUser
         password: dbmessenger1234!@
